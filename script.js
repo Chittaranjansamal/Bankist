@@ -63,7 +63,34 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 /////////////////////////////////////////////////
 
+const displayMovement = function (movement){
+  containerMovements.innerHTML = '';
+  movement.forEach(function (mov, i ){
+    const type = mov > 0 ? 'deposit' : 'withdrawal';
+  
+  const html = `
+  <div class="movements__row">
+    <div class="movements__type movements__type--${type}">${i+1}${type}</div>
+    <div class="movements__value">${mov}</div>
+  </div>
+  `;
+  containerMovements.insertAdjacentHTML( "afterbegin", html);
+});
+};
+displayMovement(account1.movements);
+  
+const calDisplayBalance = function (movement) {
+  const balance = movement.reduce((acc, mov) => acc+ mov, 0 );
+  labelBalance.textContent = `${balance} EUR`;
+}
+calDisplayBalance(account1.movements);
 
+const creatUsername = function (accs){
+  accs.forEach(function(acc){
+    acc.username = acc.ownenr.toLowerCase().split(' ').map(name => name[0]).join('');
+  });
+};
+creatUsername(accounts);
 /////////////////////////////////////////////////
 // LECTURES
 
