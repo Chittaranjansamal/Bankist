@@ -2,32 +2,32 @@
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
-// BANKIST APP
+// PASSBOOK APP
 
 // Data
 const account1 = {
-  owner: 'Jonas Schmedtmann',
+  owner: 'James bond',
   movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
   interestRate: 1.2, // %
   pin: 1111,
 };
 
 const account2 = {
-  owner: 'Jessica Davis',
+  owner: 'John Wick',
   movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
   interestRate: 1.5,
-  pin: 2222,
+  pin: 2023,
 };
 
 const account3 = {
-  owner: 'Steven Thomas Williams',
+  owner: 'Jack Ryan',
   movements: [200, -200, 340, -300, -20, 50, 400, -460],
   interestRate: 0.7,
   pin: 3333,
 };
 
 const account4 = {
-  owner: 'Sarah Smith',
+  owner: 'Tommy Shelby',
   movements: [430, 1000, 700, 50, 90],
   interestRate: 1,
   pin: 4444,
@@ -71,7 +71,7 @@ const displayMovement = function (movement){
   const html = `
   <div class="movements__row">
     <div class="movements__type movements__type--${type}">${i+1}${type}</div>
-    <div class="movements__value">${mov}</div>
+    <div class="movements__value">${mov} INR</div>
   </div>
   `;
   containerMovements.insertAdjacentHTML( "afterbegin", html);
@@ -81,13 +81,31 @@ displayMovement(account1.movements);
   
 const calDisplayBalance = function (movement) {
   const balance = movement.reduce((acc, mov) => acc+ mov, 0 );
-  labelBalance.textContent = `${balance} EUR`;
+  labelBalance.textContent = `${balance} INR`;
 }
 calDisplayBalance(account1.movements);
 
+const calDisplaySummary = function (movements){
+  const income = movements
+  .filter(mov => mov > 0) 
+  .reduce((acc, mov) => acc + mov, 0);
+  labelSumIn.textContent = ` ${income} INR`;
+
+  const out = movements
+  .filter(mov => mov < 0)
+  .reduce((acc, mov) => acc + mov, 0 );
+  labelSumOut.textContent = ` ${Math.abs(out)} INR`;
+  const intrest = movements
+  .filter(mov => mov > 0)
+  .map(deposit => deposit *1.2/100)
+  .reduce((acc, deposit) => acc + deposit, 0)
+  labelSumInterest.textContent = ` ${Math.abs(intrest)} INR`;
+};
+calDisplaySummary(account1.movements);
+
 const creatUsername = function (accs){
   accs.forEach(function(acc){
-    acc.username = acc.ownenr.toLowerCase().split(' ').map(name => name[0]).join('');
+    acc.username = acc.owner.toLowerCase().split(' ').map(name => name[0]).join('');
   });
 };
 creatUsername(accounts);
