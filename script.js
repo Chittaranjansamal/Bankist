@@ -16,7 +16,7 @@ const account2 = {
   owner: 'John Wick',
   movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
   interestRate: 1.5,
-  pin: 2023,
+  pin: 2222,
 };
 
 const account3 = {
@@ -77,31 +77,30 @@ const displayMovement = function (movement){
   containerMovements.insertAdjacentHTML( "afterbegin", html);
 });
 };
-displayMovement(account1.movements);
   
 const calDisplayBalance = function (movement) {
   const balance = movement.reduce((acc, mov) => acc+ mov, 0 );
   labelBalance.textContent = `${balance} INR`;
 }
-calDisplayBalance(account1.movements);
 
-const calDisplaySummary = function (movements){
-  const income = movements
+
+const calDisplaySummary = function (acc){
+  const income = acc.movements
   .filter(mov => mov > 0) 
   .reduce((acc, mov) => acc + mov, 0);
   labelSumIn.textContent = ` ${income} INR`;
 
-  const out = movements
+  const out = acc.movements
   .filter(mov => mov < 0)
   .reduce((acc, mov) => acc + mov, 0 );
   labelSumOut.textContent = ` ${Math.abs(out)} INR`;
-  const intrest = movements
+  const intrest = acc.movements
   .filter(mov => mov > 0)
-  .map(deposit => deposit *1.2/100)
+  .map(deposit => deposit *acc.interestRate/100)
   .reduce((acc, deposit) => acc + deposit, 0)
   labelSumInterest.textContent = ` ${Math.abs(intrest)} INR`;
 };
-calDisplaySummary(account1.movements);
+
 
 const creatUsername = function (accs){
   accs.forEach(function(acc){
@@ -109,6 +108,29 @@ const creatUsername = function (accs){
   });
 };
 creatUsername(accounts);
+
+let currentAccount ;
+
+btnLogin.addEventListener('click', function (e){
+  e.preventDefault();
+
+  currentAccount = accounts.find(
+    acc =>acc.username === inputLoginUsername.value
+  );
+
+  if (currentAccount?.pin === Number (inputLoginPin.value)){
+    labelWelcome.textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}`
+    containerApp.style.opacity = 100;
+    inputLoginUsername.value = inputLoginPin.value = '';
+    inputLoginPin.blur();
+    labelDate.textContent =Date().slice(4,15).replaceAll(' ','/');
+    displayMovement(currentAccount.movements);
+    calDisplaySummary(currentAccount);
+    calDisplayBalance(currentAccount.movements);
+  }
+});
+
+
 /////////////////////////////////////////////////
 // LECTURES
 
